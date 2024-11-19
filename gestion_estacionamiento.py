@@ -4,20 +4,20 @@ import sqlite3
 def create_tables(cursor, conn):
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Usuarios (
-            dni INTEGEREGER PRIMARY KEY,
-            nombre TEXT,
-            apellido TEXT
+            dni INTEGER PRIMARY KEY,
+            nombre TEXT NOT NULL,
+            apellido TEXT NOT NULL
         )
     """)
     #TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS").
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS UsoEstacionamiento (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ingreso TEXT,
+            ingreso TEXT NOT NULL,
             egreso TEXT NULL,
-            usuario INTEGER,
-            plaza INTEGER,
-            auto TEXT,
+            usuario INTEGER NOT NULL,
+            plaza INTEGER NOT NULL,
+            auto TEXT NOT NULL,
             FOREIGN KEY (usuario) REFERENCES Usuarios(dni),
             FOREIGN KEY (plaza) REFERENCES Plaza(numero),
             FOREIGN KEY (auto) REFERENCES Autos(patente)
@@ -28,22 +28,23 @@ def create_tables(cursor, conn):
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Plaza (
             numero INTEGER PRIMARY KEY,
-            ocupado BOOLEAN,
-            techado BOOLEAN,
-            ancho FLOAT,
-            profundidad FLOAT,
-            alto FLOAT
+            ocupado BOOLEAN NOT NULL,
+            techado BOOLEAN NOT NULL,
+            ancho FLOAT NOT NULL,
+            profundidad FLOAT NOT NULL,
+            alto FLOAT NOT NULL
         )
     """)
     conn.commit()
+    
 def obtener_plaza(cursor):
-
     rows = cursor.execute(f'''SELECT numero FROM Plaza WHERE ocupado = 0''').fetchall()
     if len(rows) > 0:
         (a,) = rows[0]
     else:
         a = -1
     return a
+
 def ingresar_vehiculo (cursor, conn, usuario, auto):
     plaza = obtener_plaza(cursor)
     if plaza != -1:
@@ -82,7 +83,6 @@ def baja(cursor, conn, id):
     cursor.execute(f'''DELETE FROM UsoEstacionamiento WHERE id = {id}''')
     conn.commit()
     #Parametros a rellenar
-
 
 def modificar_tabla(cursor, conn, modificacion: str):
     cursor.execute(modificacion)
