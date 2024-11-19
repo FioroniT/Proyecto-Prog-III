@@ -18,11 +18,14 @@ def create_tables(cursor, conn):
             usuario INTEGER NOT NULL,
             plaza INTEGER NOT NULL,
             auto TEXT NOT NULL,
+            empleado TEXT NOT NULL,
             FOREIGN KEY (usuario) REFERENCES Usuarios(dni),
             FOREIGN KEY (plaza) REFERENCES Plaza(numero),
             FOREIGN KEY (auto) REFERENCES Autos(patente)
         )
     """)
+    #empleado -> Nexo con Gestión de Empleados
+    #usuario -> NExo con Gestión de Usuarios
 
     #BOOLEAN no es un tipo de dato aceptado, deberia usarse un INTEGEREGER limitado a 1 o 0
     cursor.execute("""
