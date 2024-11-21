@@ -1,10 +1,15 @@
 import flet as ft
+import gestion_estacionamiento as ge
 
 def main(page: ft.Page):
     # Configuración inicial de la ventana
     page.title = "Gestor de Estacionamiento"
     page.theme_mode = ft.ThemeMode.DARK  # Opcional, puedes cambiarlo a DARK
     page.padding = 10
+
+    nombre_usuario = ft.TextField(label="Nombre del Usuario")
+    tipo_vehiculo = ft.TextField(label="Tipo de Vehículo")
+    mensaje = ft.Text("")
     
     # Función para cambiar de pestaña
     def cambiar_tab(index):
@@ -37,6 +42,18 @@ def main(page: ft.Page):
             ],
         )
     
+    def manejar_ingreso(e):
+        if nombre_usuario.value and tipo_vehiculo.value:
+            resultado = ge.ingresar_vehiculo(nombre_usuario.value, tipo_vehiculo.value)
+            mensaje.value = resultado
+            # Limpiar campos después del registro
+            nombre_usuario.value = ""
+            tipo_vehiculo.value = ""
+            page.update()
+        else:
+            mensaje.value = "Por favor, complete ambos campos."
+            page.update()
+    
     # Barra de aplicación
     page.appbar = ft.AppBar(
         title=ft.Text("Gestor de Estacionamiento"),
@@ -47,7 +64,15 @@ def main(page: ft.Page):
     # Pestañas
     tabs_control = ft.Tabs(
         tabs=[
-            ft.Tab(text="Tab 1", content=ft.Text("Lógica del alta")),
+            ft.Tab(
+                text="Tab 1", 
+                content=ft.Column([
+                    ft.Text("Registro de Vehículos", style=ft.TextThemeStyle.HEADLINE_SMALL),
+                    nombre_usuario,
+                    tipo_vehiculo,
+                    ft.ElevatedButton("Registrar Vehículo", on_click=manejar_ingreso),
+                    mensaje,
+                ])),
             ft.Tab(text="Tab 2", content=ft.Text("Lógica de la baja")),
             ft.Tab(
                 text="Tab 3", 
