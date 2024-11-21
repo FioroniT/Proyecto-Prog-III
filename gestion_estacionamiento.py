@@ -55,17 +55,17 @@ def ingresar_vehiculo (cursor, conn, usuario, auto):
         (id,) = cursor.execute(f'''SELECT last_insert_rowid()''').fetchall()[0]
         cursor.execute(f'''UPDATE Plaza SET ocupado = 1 WHERE numero = {plaza}''')
         conn.commit()
-        print(f'''su numero de tramite es: {id}''')
+        #print(f'''su numero de tramite es: {id}''')
         return id
     else:
-        print("no quedan plzas disponibles")
+        #print("no quedan plzas disponibles")
         return -1
 
 def consultar_tabla(cursor, conn, consulta: str):
     cursor.execute(consulta)
     conn.commit()
 
-def alta(cursor, conn, ingreso, egreso, usuario, plaza, auto):
+def alta(cursor, conn, ingreso, egreso, usuario: str, plaza: int, auto):
     #se da de alta un usuario y vehiculo
     cursor.execute(f'''INSERT INTO UsoEstacionamiento (ingreso, egreso, usuario, plaza, auto) VALUES({ingreso}, {egreso}, {usuario}, {plaza}, {auto})''')
     conn.commit()
@@ -75,11 +75,11 @@ def retirar_vehiculo(id_ticket, cursor, conn):
     if len(plazas) > 0:
         (plaza,) = plazas[0]
         baja(cursor,conn,id_ticket)
-        print("se dio de baja")
         cursor.execute(f'''UPDATE Plaza SET ocupado = 0 WHERE numero = {plaza}''')
         conn.commit()
+        return True
     else:
-        print("el ticket no corresponde a una plaza ocupada")
+        return False
 
 def baja(cursor, conn, id):
     #se da de baja el usuario y vehiculo
